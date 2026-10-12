@@ -126,3 +126,35 @@ footer b{color:var(--hivis)}
   .hero h1 span{opacity:1;transform:none}
   html{scroll-behavior:auto}
 }
+/* ---- mobile hardening ---- */
+html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+.hero{min-height:100vh;min-height:100svh}
+
+@media (max-width:760px){
+  .nav{padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem}
+  .hero{padding:5.5rem 1rem 3rem;gap:1rem}
+  .hero-art{max-width:290px}
+  .hero h1{font-size:clamp(2.6rem,13vw,4rem)}
+  .hero h1 span:nth-child(3){-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink)}
+  .sticker{font-size:.75rem;padding:.3rem .6rem}
+  .s1{left:2%}.s2{left:2%}.s3{right:2%}
+
+  /* contract address: label + copy on top, full address wraps below */
+  .ca{flex-wrap:wrap;padding:.7rem}
+  .ca-label{order:1}
+  .ca-copy{order:2;margin-left:auto}
+  .ca-addr{order:3;flex-basis:100%;white-space:normal;word-break:break-all;font-size:.75rem}
+
+  .btn{min-height:48px;padding:1rem 1.2rem}
+  .section{padding:3.5rem 1rem}
+  .steps li{padding:1rem}
+  .card{padding:1.3rem}
+  .card h3{font-size:1.6rem}
+  .tape span{font-size:1rem}
+  footer{padding:2rem 1rem calc(2rem + env(safe-area-inset-bottom))}
+}
+
+/* no stuck hover effects on touch screens */
+@media (hover:none){
+  .btn:hover,.card:hover,.checks li:hover{transform:none}
+}

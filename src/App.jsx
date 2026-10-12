@@ -75,6 +75,12 @@ export default function App() {
     return () => window.removeEventListener('scroll', f)
   }, [])
   const go = () => setOpen(false)
+  useEffect(() => {
+  document.body.style.overflow = open ? 'hidden' : ''
+  const esc = (e) => e.key === 'Escape' && setOpen(false)
+  window.addEventListener('keydown', esc)
+  return () => { window.removeEventListener('keydown', esc); document.body.style.overflow = '' }
+}, [open])
 
   return (
     <>
