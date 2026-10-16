@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import PieScare from './PieScare.jsx'
 
 const CA = '4T34YQu8UXC925v45yYDs1J2HHu32JpcbFRLw3mapump'
 const LINKS = {
@@ -190,6 +191,8 @@ export default function App() {
         <img src="/mate.png" alt="" />
         <p><b>Degen Mate $MATE</b> is a meme coin with no intrinsic value or expectation of financial return. Nothing here is financial advice. Only spend what you can afford to lose, and always check the contract address.</p>
       </footer>
+
+      <PieScare />
     </>
   )
 }

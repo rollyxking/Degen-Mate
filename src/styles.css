@@ -158,3 +158,64 @@ html{-webkit-text-size-adjust:100%;overflow-x:hidden}
 @media (hover:none){
   .btn:hover,.card:hover,.checks li:hover{transform:none}
 }
+/* ---- pie jump scare ---- */
+.pie-layer{position:fixed;inset:0;z-index:200;pointer-events:none;overflow:hidden}
+.pie-layer *{pointer-events:none}
+
+.roo.lunge{animation:rooLunge .38s ease-out forwards}
+@keyframes rooLunge{to{transform:translate(-5%,3%) scale(1.1) rotate(-5deg)}}
+.roo.laugh{animation:rooLaugh .11s ease-in-out infinite alternate}
+@keyframes rooLaugh{from{transform:translateY(-4px) rotate(-2.5deg)}to{transform:translateY(5px) rotate(2.5deg)}}
+
+.pie-peek{position:absolute;right:12px;bottom:0;width:clamp(84px,18vw,130px);aspect-ratio:1;object-fit:cover;border-radius:50%;border:4px solid var(--ink);background:#fff;box-shadow:5px 5px 0 var(--ink);transform:translateY(8%);animation:peekUp .38s cubic-bezier(.2,1.4,.4,1) both}
+.pie-peek.laugh{animation:peekLaugh .11s ease-in-out infinite alternate}
+.pie-peek.down{animation:peekDown .5s ease-in forwards}
+@keyframes peekUp{from{transform:translateY(120%)}to{transform:translateY(8%)}}
+@keyframes peekLaugh{from{transform:translateY(5%) rotate(-5deg)}to{transform:translateY(11%) rotate(5deg)}}
+@keyframes peekDown{to{transform:translateY(130%)}}
+
+.pie-fly{position:absolute;left:0;top:0;width:130px;opacity:0;will-change:transform;animation:pieFly .52s cubic-bezier(.45,0,.95,.55) forwards}
+.pie-fly svg{display:block;width:100%;height:auto}
+@keyframes pieFly{
+  0%{opacity:1;transform:translate(var(--sx),var(--sy)) translate(-50%,-50%) scale(.3) rotate(-25deg)}
+  100%{opacity:1;transform:translate(var(--ex),var(--ey)) translate(-50%,-50%) scale(var(--sc)) rotate(330deg)}
+}
+
+.pie-flash{position:absolute;inset:0;background:#fff;opacity:0;animation:pieFlash .3s ease-out}
+@keyframes pieFlash{0%{opacity:.85}100%{opacity:0}}
+
+.pie-splat{position:absolute;width:min(125vmax,980px);width:max(110vmin,min(125vmax,980px));aspect-ratio:1;transform:translate(-50%,-50%);animation:splatIn .2s cubic-bezier(.2,1.5,.4,1) both;transition:opacity .6s,transform .6s}
+.pie-splat.out{opacity:0;transform:translate(-50%,-30%)}
+.pie-splat svg{display:block;width:100%;height:100%;overflow:visible}
+@keyframes splatIn{from{opacity:0;transform:translate(-50%,-50%) scale(.2)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.s-sauce{fill:#d62b1f;stroke:var(--ink);stroke-width:5}
+.s-gravy{fill:#7a3f12}
+.s-crust{fill:#f0b64d;stroke:var(--ink);stroke-width:4}
+.pie-drip{fill:#d62b1f;stroke:var(--ink);stroke-width:4;transform-box:fill-box;transform-origin:top;animation:drip 2.6s ease-in both}
+@keyframes drip{from{transform:scaleY(.05)}to{transform:scaleY(1)}}
+
+.pie-bubble{position:absolute;transform:translate(-50%,-100%) rotate(-4deg);background:var(--white);color:var(--ink);border:4px solid var(--ink);border-radius:18px;padding:.5rem 1rem;box-shadow:6px 6px 0 var(--ink);text-align:center;line-height:1.1;white-space:nowrap;animation:bubbleIn .25s cubic-bezier(.2,1.6,.4,1) .25s both;transition:opacity .4s}
+.pie-bubble.out{opacity:0}
+.pie-bubble b{display:block;font-family:var(--display);font-weight:400;font-size:clamp(1.3rem,5vw,2.2rem);animation:bubbleShake .12s linear infinite alternate}
+.pie-bubble span{font-weight:700;font-size:.95rem}
+.pie-bubble::after{content:"";position:absolute;left:50%;bottom:-16px;width:22px;height:22px;background:var(--white);border:4px solid var(--ink);border-width:0 4px 4px 0;transform:translateX(-50%) rotate(45deg)}
+@keyframes bubbleIn{from{opacity:0;transform:translate(-50%,-100%) rotate(-4deg) scale(.3)}to{opacity:1;transform:translate(-50%,-100%) rotate(-4deg) scale(1)}}
+@keyframes bubbleShake{from{transform:translateX(-2px) rotate(-1.5deg)}to{transform:translateX(2px) rotate(1.5deg)}}
+
+main.pie-shake{animation:pieShake .35s linear}
+@keyframes pieShake{
+  0%,100%{transform:none}
+  15%{transform:translate(-9px,5px)}30%{transform:translate(8px,-6px)}
+  45%{transform:translate(-6px,-4px)}60%{transform:translate(5px,4px)}80%{transform:translate(-2px,2px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .pie-bubble{opacity:1;transform:translate(-50%,-100%) rotate(-4deg)}
+  .pie-splat{opacity:1}
+  .pie-splat.out,.pie-bubble.out{opacity:0}
+}
+
+/* ---- "tap to enter" screen (unlocks sound) ---- */
+.pie-gate{position:fixed;inset:0;z-index:300;background:var(--hivis);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;padding:1.5rem;text-align:center;background-image:repeating-linear-gradient(115deg,transparent 0 46px,rgba(0,0,0,.055) 46px 92px)}
+.pie-gate img{width:min(52vw,220px);aspect-ratio:1;object-fit:cover;border-radius:50%;border:5px solid var(--ink);box-shadow:8px 8px 0 var(--ink);background:#fff;animation:bob 3.2s ease-in-out infinite}
+.pie-gate h2{font-size:clamp(2.2rem,9vw,4rem);text-transform:uppercase;margin:0}
+.pie-gate .btn{font-size:1.25rem;cursor:pointer}
