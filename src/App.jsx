@@ -95,6 +95,7 @@ export default function App() {
           <a href="#proof" onClick={go}>Safety Check</a>
           <a href="#buy" onClick={go}>How to buy</a>
           <a href="#crew" onClick={go}>The crew</a>
+          <a href="#/generator" onClick={go}>Meme Generator</a>
           <a className="btn small" href={LINKS.pump} target="_blank" rel="noreferrer" onClick={go}>Buy $MATE</a>
         </nav>
       </header>
