@@ -96,6 +96,7 @@ export default function App() {
           <a href="#buy" onClick={go}>How to buy</a>
           <a href="#crew" onClick={go}>The crew</a>
           <a href="#/generator" onClick={go}>Meme Generator</a>
+          <a href="#/game" onClick={go}>Play Game</a>
           <a className="btn small" href={LINKS.pump} target="_blank" rel="noreferrer" onClick={go}>Buy $MATE</a>
         </nav>
       </header>
@@ -115,6 +116,7 @@ export default function App() {
             <div className="cta">
               <a className="btn" href={LINKS.pump} target="_blank" rel="noreferrer">Buy $MATE</a>
               <a className="btn ghost" href={LINKS.tg} target="_blank" rel="noreferrer">Join the Telegram</a>
+              <a className="btn ghost" href="#/game">Play Game</a>
             </div>
             <CopyCA />
           </div>
@@ -171,6 +173,16 @@ export default function App() {
           <div className="cta center">
             <a className="btn" href={LINKS.pump} target="_blank" rel="noreferrer">Open pump.fun</a>
             <a className="btn ghost" href={LINKS.dex} target="_blank" rel="noreferrer">View chart</a>
+          </div>
+        </section>
+
+        <section id="game" className="gameband">
+          <div className="gameband-in">
+            <div>
+              <h2>The Last Degen</h2>
+              <p>Run, jump and collect coins as the DegenMate kangaroo. Free to play, three lives, one high score to beat. Coins are just for bragging rights.</p>
+            </div>
+            <a className="btn" href="#/game">PLAY GAME</a>
           </div>
         </section>
 
