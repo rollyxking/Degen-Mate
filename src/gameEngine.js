@@ -76,12 +76,18 @@ const mkCity = (minH, maxH, minW, maxW) => {
 
 /* ---------- Engine ---------- */
 export function createGame(canvas, cb, sfx, opts = {}) {
-  const W = opts.width || 800 // narrower view on portrait phones so everything stays big
-  const MX = W - 160
+  let W = opts.width || 800 // view width adapts to the screen shape so the game fills it
+  let MX = W - 160
   const c = canvas.getContext('2d')
   const dpr = Math.min(window.devicePixelRatio || 1, 2)
-  canvas.width = W * dpr; canvas.height = H * dpr
-  c.setTransform(dpr, 0, 0, dpr, 0, 0)
+  // Backing-store resolution follows the on-screen size so full-screen stays sharp.
+  function applySize() {
+    const cw = canvas.clientWidth || W
+    const k = Math.min(Math.max((cw / W) * dpr, 1), 2.5)
+    canvas.width = Math.round(W * k); canvas.height = Math.round(H * k)
+    c.setTransform(k, 0, 0, k, 0, 0)
+  }
+  applySize()
 
   const stars = Array.from({ length: 70 }, () => ({ x: rnd(0, W), y: rnd(0, 220), r: rnd(0.5, 1.6), p: rnd(0, 6) }))
   const far = mkCity(110, 260, 40, 80), near = mkCity(60, 170, 50, 100)
@@ -396,6 +402,15 @@ export function createGame(canvas, cb, sfx, opts = {}) {
     start() { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); sfx.startMusic(); emit(); last = performance.now(); raf = requestAnimationFrame(frame) },
     pause: setPaused,
     jumpDown, jumpUp,
+    resize(w) {
+      const nw = Math.max(480, Math.min(1000, Math.round(w || W)))
+      if (nw !== W) {
+        W = nw; MX = W - 160
+        s.p.x = W < 700 ? 90 : 120
+        for (const st of stars) st.x = rnd(0, W)
+      }
+      applySize()
+    },
     destroy() {
       destroyed = true; cancelAnimationFrame(raf); sfx.stopMusic()
       window.removeEventListener('keydown', kd); window.removeEventListener('keyup', ku)

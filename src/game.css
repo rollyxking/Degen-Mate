@@ -102,3 +102,23 @@ html.dg-lock,html.dg-lock body{overscroll-behavior:none;touch-action:none}
   .dg-overlay .dg-play,.dg-overlay .dg-ghost{margin-top:.3rem;padding:.5rem 1.2rem;width:auto}
   .dg-overlay .dg-save{display:none}
 }
+
+/* ===== Full-screen stage: the game fills the whole viewport on every device ===== */
+.dg-stage{position:fixed;inset:0;z-index:100;max-width:none;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#1a0e5c,#05031a 70%);padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);overflow:hidden}
+.dg-stage .dg-frame{width:min(100%,calc(100dvh * var(--ar,2)));border:0;border-radius:0;box-shadow:0 0 60px rgba(125,249,255,.25);container-type:inline-size;flex:none}
+.dg-stage .dg-canvas{width:100%;height:auto}
+.dg-stage .dg-stat b{font-size:clamp(1.1rem,3.6vw,1.8rem);font-size:clamp(1rem,3.2cqw,2.6rem)}
+.dg-stage .dg-stat small{font-size:clamp(.6rem,1.6vw,.75rem);font-size:clamp(.55rem,1.5cqw,1rem)}
+.dg-stage .dg-lives{font-size:clamp(1.2rem,4vw,2rem);font-size:clamp(1.1rem,3.6cqw,2.6rem)}
+.dg-actions{display:flex;gap:.4rem;pointer-events:auto}
+.dg-actions .dg-icon.sm{width:clamp(36px,4.4cqw,56px);height:clamp(36px,4.4cqw,56px);min-height:0;font-size:clamp(.95rem,2.2cqw,1.5rem);padding:0}
+.dg-stage .dg-overlay h2{font-size:clamp(2rem,8vw,3.6rem);font-size:clamp(1.6rem,7cqw,4.2rem)}
+/* Portrait: game on top, huge JUMP pad fills the thumb area below */
+.dg-stage .dg-jump{margin:0;border-radius:0;border-width:4px 0 0;box-shadow:none;width:100%;flex:1 1 auto;min-height:clamp(90px,18dvh,200px);font-size:clamp(1.8rem,9vw,3rem)}
+@media (orientation:landscape) and (max-height:520px){
+  .dg-stage .dg-jump{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:150px;flex:none;min-height:84px;border-radius:20px;border-width:4px;box-shadow:0 6px 0 #ff4fd8;opacity:.85;z-index:5}
+}
+@media (orientation:landscape) and (min-width:761px) and (hover:none){
+  .dg-stage .dg-jump{position:fixed;right:max(20px,env(safe-area-inset-right,0px));bottom:max(20px,env(safe-area-inset-bottom,0px));width:170px;flex:none;min-height:96px;border-radius:22px;border-width:4px;box-shadow:0 6px 0 #ff4fd8;opacity:.85;z-index:5}
+}
+@media (max-width:420px){.dg-actions{gap:.2rem}}

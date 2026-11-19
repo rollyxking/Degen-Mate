@@ -17,3 +17,6 @@ Files: `src/Game.jsx` (UI), `src/gameEngine.js` (canvas engine + sounds), `src/r
 2. Project Settings > API: copy the **Project URL** and the **anon / publishable key**.
 3. Vercel > Project > Settings > Environment Variables: add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, then redeploy. (Locally: copy `.env.example` to `.env.local`.)
 Without these variables the game falls back to a per-device board. Players can only write through `submit_score()`, which keeps each name's best score and rejects impossible values.
+
+### Full screen
+PLAY NOW opens the game full screen (Fullscreen API on Android/desktop, landscape lock where allowed; iPhone Safari uses a full-viewport stage). The view width adapts to the screen shape and re-fits on rotate/resize. HUD has sound, full-screen and pause buttons.

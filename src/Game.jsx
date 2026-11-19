@@ -4,6 +4,30 @@ import { drawRoo } from './roo.js'
 import { cleanName, getBest, getName, getTop, isGlobal, setBest, setName, submitScore } from './leaderboard.js'
 
 const sfx = new Sfx()
+
+// ----- full-screen helpers (Android/desktop use the Fullscreen API; iPhone Safari falls back to the CSS full-viewport stage) -----
+const isFs = () => Boolean(document.fullscreenElement || document.webkitFullscreenElement)
+const canFs = () => Boolean(document.fullscreenEnabled || document.webkitFullscreenEnabled)
+function enterFs() {
+  try {
+    const el = document.documentElement
+    const req = el.requestFullscreen || el.webkitRequestFullscreen
+    if (!req || !canFs()) return
+    const r = req.call(el, { navigationUI: 'hide' })
+    const lock = () => { try { screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape').catch(() => {}) } catch { /* ignore */ } }
+    if (r && r.then) r.then(lock).catch(() => {}); else lock()
+  } catch { /* ignore */ }
+}
+function exitFs() {
+  try {
+    if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock()
+    if (!isFs()) return
+    const ex = document.exitFullscreen || document.webkitExitFullscreen
+    if (ex) { const r = ex.call(document); if (r && r.catch) r.catch(() => {}) }
+  } catch { /* ignore */ }
+}
+// Logical game width that matches the screen shape (height is always 400), so the game fills the screen with no bars.
+const computeW = () => Math.max(500, Math.min(960, Math.round((400 * window.innerWidth) / Math.max(1, window.innerHeight))))
 try { sfx.muted = localStorage.getItem('dm_muted') === '1' } catch { /* ignore */ }
 
 function Preview() {
@@ -50,7 +74,10 @@ export default function Game() {
   const gameRef = useRef(null)
   const nameRef = useRef(name)
   const viewRef = useRef(800)
+  const screenRef = useRef('home')
+  const [fs, setFs] = useState(false)
   nameRef.current = name
+  screenRef.current = screen
 
   const refresh = useCallback(async () => {
     setBoardInfo((b) => ({ ...b, loading: true }))
@@ -79,23 +106,40 @@ export default function Game() {
     de.classList.add('dg-lock')
     gameRef.current = g
     g.start()
-    return () => { g.destroy(); gameRef.current = null; de.classList.remove('dg-lock') }
+    let tm
+    const onResize = () => {
+      clearTimeout(tm)
+      tm = setTimeout(() => { const w = computeW(); viewRef.current = w; setViewW(w); g.resize(w) }, 120)
+    }
+    const onFs = () => {
+      const on = isFs()
+      setFs(on)
+      if (!on && screenRef.current === 'play') g.pause(true)
+      onResize()
+    }
+    window.addEventListener('resize', onResize)
+    window.addEventListener('orientationchange', onResize)
+    document.addEventListener('fullscreenchange', onFs)
+    document.addEventListener('webkitfullscreenchange', onFs)
+    onResize()
+    return () => {
+      clearTimeout(tm); g.destroy(); gameRef.current = null; de.classList.remove('dg-lock')
+      window.removeEventListener('resize', onResize); window.removeEventListener('orientationchange', onResize)
+      document.removeEventListener('fullscreenchange', onFs); document.removeEventListener('webkitfullscreenchange', onFs)
+    }
   }, [inStage, runId, handleOver])
 
-  const pickView = () => {
-    const w = window.innerWidth < 700 && window.innerHeight > window.innerWidth ? 560 : 800
-    viewRef.current = w; setViewW(w)
-  }
+  const pickView = () => { const w = computeW(); viewRef.current = w; setViewW(w) }
   const begin = () => {
     const n = cleanName(name)
     if (n.length < 2) { setErr('Pick a username (2–14 characters) to hit the leaderboard.'); return }
     setErr(''); setNameState(n); setName(n)
-    sfx.init(); pickView()
+    sfx.init(); pickView(); enterFs()
     setHud({ score: 0, lives: 3, coins: 0 }); setPaused(false); setResult(null); setSaveState('')
     setRunId((r) => r + 1); setScreen('play')
   }
-  const again = () => { sfx.init(); pickView(); setSaveState(''); setHud({ score: 0, lives: 3, coins: 0 }); setPaused(false); setResult(null); setRunId((r) => r + 1); setScreen('play') }
-  const home = () => { setScreen('home'); setPaused(false); refresh() }
+  const again = () => { sfx.init(); pickView(); if (!isFs()) enterFs(); setSaveState(''); setHud({ score: 0, lives: 3, coins: 0 }); setPaused(false); setResult(null); setRunId((r) => r + 1); setScreen('play') }
+  const home = () => { exitFs(); setScreen('home'); setPaused(false); refresh() }
   const toggleSound = () => {
     const m = !muted; setMuted(m); sfx.setMuted(m)
     try { localStorage.setItem('dm_muted', m ? '1' : '0') } catch { /* ignore */ }
@@ -105,11 +149,11 @@ export default function Game() {
 
   return (
     <div className="dg">
-      <header className="dg-top">
+      {screen === 'home' && <header className="dg-top">
         <a className="dg-back" href="#top">← Back to site</a>
         <b className="dg-brand"><img src="/mate.png" alt="" /> Degen Mate</b>
         <button className="dg-icon" onClick={toggleSound} aria-label={muted ? 'Turn sound on' : 'Turn sound off'} aria-pressed={!muted}>{muted ? '🔇' : '🔊'}</button>
-      </header>
+      </header>}
 
       {screen === 'home' && (
         <main className="dg-home">
@@ -169,7 +213,11 @@ export default function Game() {
                 {[0, 1, 2].map((i) => <span key={i} className={i < hud.lives ? 'on' : ''}>♥</span>)}
               </div>
               <div className="dg-stat r"><small>COINS</small><b>🪙 {hud.coins}</b></div>
-              <button className="dg-icon sm" onClick={() => gameRef.current && gameRef.current.pause(!paused)} aria-label="Pause">⏸</button>
+              <div className="dg-actions">
+                <button className="dg-icon sm" onClick={toggleSound} aria-label={muted ? 'Turn sound on' : 'Turn sound off'}>{muted ? '🔇' : '🔊'}</button>
+                {canFs() && <button className="dg-icon sm" onClick={() => (isFs() ? exitFs() : enterFs())} aria-label={fs ? 'Exit full screen' : 'Full screen'}>{fs ? '⤡' : '⤢'}</button>}
+                <button className="dg-icon sm" onClick={() => gameRef.current && gameRef.current.pause(!paused)} aria-label="Pause">⏸</button>
+              </div>
             </div>
 
             {paused && screen === 'play' && (
@@ -195,7 +243,6 @@ export default function Game() {
             )}
           </div>
           <button className="dg-jump" onPointerDown={jd} onPointerUp={ju} onPointerCancel={ju} onPointerLeave={ju} onContextMenu={(e) => e.preventDefault()}>JUMP</button>
-          <p className="dg-fine">Space / ↑ to jump · Esc to pause</p>
         </main>
       )}
     </div>
