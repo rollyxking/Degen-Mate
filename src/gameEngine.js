@@ -79,15 +79,21 @@ export function createGame(canvas, cb, sfx, opts = {}) {
   let W = opts.width || 800 // view width adapts to the screen shape so the game fills it
   let MX = W - 160
   const c = canvas.getContext('2d')
-  const dpr = Math.min(window.devicePixelRatio || 1, 2)
-  // Backing-store resolution follows the on-screen size so full-screen stays sharp.
+  // Backing store = on-screen CSS size x real device pixel ratio, so it stays crisp on phones (no 2x cap).
   function applySize() {
-    const cw = canvas.clientWidth || W
-    const k = Math.min(Math.max((cw / W) * dpr, 1), 2.5)
-    canvas.width = Math.round(W * k); canvas.height = Math.round(H * k)
-    c.setTransform(k, 0, 0, k, 0, 0)
+    const dpr = window.devicePixelRatio || 1
+    const r = canvas.getBoundingClientRect()
+    const cw = r.width || canvas.clientWidth || W
+    const k = Math.min(Math.max((cw / W) * dpr, 1), 4)
+    const pw = Math.round(W * k), ph = Math.round(H * k)
+    if (canvas.width !== pw || canvas.height !== ph) { canvas.width = pw; canvas.height = ph }
+    c.setTransform(pw / W, 0, 0, ph / H, 0, 0)
+    c.imageSmoothingEnabled = true
+    c.imageSmoothingQuality = 'high'
   }
   applySize()
+  let ro = null
+  if (typeof ResizeObserver !== 'undefined') { ro = new ResizeObserver(() => applySize()); ro.observe(canvas) }
 
   const stars = Array.from({ length: 70 }, () => ({ x: rnd(0, W), y: rnd(0, 220), r: rnd(0.5, 1.6), p: rnd(0, 6) }))
   const far = mkCity(110, 260, 40, 80), near = mkCity(60, 170, 50, 100)
@@ -412,7 +418,7 @@ export function createGame(canvas, cb, sfx, opts = {}) {
       applySize()
     },
     destroy() {
-      destroyed = true; cancelAnimationFrame(raf); sfx.stopMusic()
+      destroyed = true; cancelAnimationFrame(raf); sfx.stopMusic(); if (ro) ro.disconnect()
       window.removeEventListener('keydown', kd); window.removeEventListener('keyup', ku)
       document.removeEventListener('visibilitychange', vis)
       canvas.removeEventListener('pointerdown', pd); canvas.removeEventListener('pointerup', jumpUp); canvas.removeEventListener('pointercancel', jumpUp)

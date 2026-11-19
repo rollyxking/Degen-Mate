@@ -56,10 +56,7 @@ kbd{background:#fff;color:#141414;border-radius:6px;padding:.05rem .4rem;font-we
 .dg-res dt{font-size:.75rem;color:#7df9ff;font-weight:700}
 .dg-res dd{margin:0;font-family:var(--display);font-size:clamp(1.1rem,4vw,1.8rem)}
 .dg-overlay .dg-play,.dg-overlay .dg-ghost{margin-top:.6rem}
-.dg-jump{display:none;width:100%;margin-top:1rem;padding:1.6rem;font-family:var(--display);font-size:1.8rem;color:#141414;background:#c9ff1f;border:4px solid #141414;border-radius:20px;box-shadow:0 6px 0 #ff4fd8;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-.dg-jump:active{transform:translateY(4px);box-shadow:0 2px 0 #ff4fd8}
-@media (hover:none),(pointer:coarse),(max-width:760px){.dg-jump{display:block}}
-@media (max-width:760px){.dg-hero,.dg-grid{grid-template-columns:1fr}.dg-preview{max-width:240px;order:-1}.dg-hero-copy{text-align:center}.dg-name{margin-inline:auto;text-align:left}.dg-play{margin-inline:auto}}
+@media (hover:none),(pointer:coarse),(max-width:760px){@media (max-width:760px){.dg-hero,.dg-grid{grid-template-columns:1fr}.dg-preview{max-width:240px;order:-1}.dg-hero-copy{text-align:center}.dg-name{margin-inline:auto;text-align:left}.dg-play{margin-inline:auto}}
 @media (max-width:560px) and (orientation:portrait){.dg-hud{padding:.35rem .4rem}.dg-stat small{display:none}}
 @media (prefers-reduced-motion:reduce){.dg-play{animation:none}}
 
@@ -78,8 +75,7 @@ html.dg-lock,html.dg-lock body{overscroll-behavior:none;touch-action:none}
 .dg-scroll{overflow-x:auto}
 .dg-refresh{font-size:1rem;background:none;border:2px solid #7df9ff;color:#7df9ff;border-radius:8px;width:32px;height:32px;cursor:pointer;vertical-align:middle;margin-left:.4rem}
 .dg-save{font-size:.85rem;color:#7df9ff;min-height:1.2em}
-.dg-play,.dg-ghost,.dg-icon,.dg-jump{min-height:44px}
-@media (max-width:420px){
+.dg-play,.dg-ghost,.dg-icon,@media (max-width:420px){
   .dg-top{padding:.6rem 0}.dg-brand{font-size:.95rem}.dg-brand img{width:28px;height:28px}
   .dg-back{font-size:.9rem}
   .dg-card{padding:1rem}.dg-card h2{font-size:1.4rem}
@@ -91,11 +87,10 @@ html.dg-lock,html.dg-lock body{overscroll-behavior:none;touch-action:none}
   .dg-icon.sm{width:36px;height:36px;min-height:0}
 }
 @media (max-width:340px){.dg-brand span,.dg-brand{display:none}.dg-lives{letter-spacing:0}}
-/* Phones held sideways: fit the whole game on screen, big thumb button floats over the corner */
+/* Phones held sideways: fit the whole game on screen */
 @media (orientation:landscape) and (max-height:520px){
   .dg-top{padding:.3rem 0}.dg-brand{display:none}
   .dg-frame{width:min(100%,calc((100dvh - 64px) * var(--ar,2)))}
-  .dg-jump{display:block;position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:150px;min-height:84px;margin:0;padding:.6rem;opacity:.85;z-index:5}
   .dg-fine{display:none}
   .dg-hero{padding:.3rem 0 1rem}.dg-preview{max-width:200px}
   .dg-overlay{padding:.4rem;gap:0}.dg-overlay h2{font-size:1.8rem}.dg-res{margin:.2rem 0}
@@ -113,12 +108,5 @@ html.dg-lock,html.dg-lock body{overscroll-behavior:none;touch-action:none}
 .dg-actions{display:flex;gap:.4rem;pointer-events:auto}
 .dg-actions .dg-icon.sm{width:clamp(36px,4.4cqw,56px);height:clamp(36px,4.4cqw,56px);min-height:0;font-size:clamp(.95rem,2.2cqw,1.5rem);padding:0}
 .dg-stage .dg-overlay h2{font-size:clamp(2rem,8vw,3.6rem);font-size:clamp(1.6rem,7cqw,4.2rem)}
-/* Portrait: game on top, huge JUMP pad fills the thumb area below */
-.dg-stage .dg-jump{margin:0;border-radius:0;border-width:4px 0 0;box-shadow:none;width:100%;flex:1 1 auto;min-height:clamp(90px,18dvh,200px);font-size:clamp(1.8rem,9vw,3rem)}
-@media (orientation:landscape) and (max-height:520px){
-  .dg-stage .dg-jump{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:150px;flex:none;min-height:84px;border-radius:20px;border-width:4px;box-shadow:0 6px 0 #ff4fd8;opacity:.85;z-index:5}
-}
-@media (orientation:landscape) and (min-width:761px) and (hover:none){
-  .dg-stage .dg-jump{position:fixed;right:max(20px,env(safe-area-inset-right,0px));bottom:max(20px,env(safe-area-inset-bottom,0px));width:170px;flex:none;min-height:96px;border-radius:22px;border-width:4px;box-shadow:0 6px 0 #ff4fd8;opacity:.85;z-index:5}
-}
+/* Portrait: game is centred; tap anywhere on the screen to jump */
 @media (max-width:420px){.dg-actions{gap:.2rem}}

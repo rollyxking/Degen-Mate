@@ -144,7 +144,9 @@ export default function Game() {
     const m = !muted; setMuted(m); sfx.setMuted(m)
     try { localStorage.setItem('dm_muted', m ? '1' : '0') } catch { /* ignore */ }
   }
-  const jd = (e) => { e.preventDefault(); gameRef.current && gameRef.current.jumpDown() }
+  // Tap anywhere on the game screen to jump (hold = higher jump). Buttons and overlays are ignored.
+  const skip = (e) => Boolean(e.target.closest && e.target.closest('button, .dg-overlay'))
+  const jd = (e) => { if (skip(e)) return; e.preventDefault(); gameRef.current && gameRef.current.jumpDown() }
   const ju = () => gameRef.current && gameRef.current.jumpUp()
 
   return (
@@ -179,7 +181,7 @@ export default function Game() {
               <h2>How to play</h2>
               <ul className="dg-how">
                 <li><b>Run.</b> The kangaroo runs on its own. You jump.</li>
-                <li><b>Jump.</b> <kbd>Space</kbd> or <kbd>↑</kbd> on desktop, tap the big button (or the screen) on mobile. Hold for a higher jump.</li>
+                <li><b>Jump.</b> <kbd>Space</kbd> or <kbd>↑</kbd> on desktop, tap anywhere on the screen on mobile. Hold for a higher jump.</li>
                 <li><b>Collect.</b> Gold coins = 10 pts, golden crowns = 100 pts.</li>
                 <li><b>Avoid.</b> Spikes, rocks and enemies cost a life. Land on an enemy to squash it for 50 pts.</li>
                 <li><b>Survive.</b> 3 lives. It gets faster the longer you last. <kbd>Esc</kbd> pauses.</li>
@@ -204,7 +206,7 @@ export default function Game() {
       )}
 
       {inStage && (
-        <main className="dg-stage">
+        <main className="dg-stage" onPointerDown={jd} onPointerUp={ju} onPointerCancel={ju} onContextMenu={(e) => e.preventDefault()}>
           <div className="dg-frame" style={{ '--ar': viewW / 400 }}>
             <canvas ref={canvasRef} className="dg-canvas" style={{ aspectRatio: `${viewW} / 400` }} aria-label="DegenMateCoin: The Last Degen game" />
             <div className="dg-hud">
@@ -242,7 +244,6 @@ export default function Game() {
               </div>
             )}
           </div>
-          <button className="dg-jump" onPointerDown={jd} onPointerUp={ju} onPointerCancel={ju} onPointerLeave={ju} onContextMenu={(e) => e.preventDefault()}>JUMP</button>
         </main>
       )}
     </div>
